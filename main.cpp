@@ -18,11 +18,10 @@
 #define WM_CREATED WM_APP
 #define WM_SETALPHA (WM_APP+1)
 #define ANIMATION_STEP 32
-#define SHOWEDITALPHA 192
+#define SHOWEDITALPHA 128
 #define HIDEDITALPHA 64
 
 HDC hDC;
-HGLRC hRC;
 BOOL active;
 GLuint program;
 GLuint vao;
@@ -211,6 +210,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	static HFONT hFont;
 	static HINSTANCE hRtLib;
 	static BOOL bEditVisible = TRUE;
+	static HGLRC hRC;
 	switch (msg)
 	{
 	case WM_CREATE:
@@ -230,7 +230,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			!wglMakeCurrent(hDC, hRC) ||
 			glewInit() != GLEW_OK ||
 			!InitGL()) return -1;
-		SetWindowText(hEdit, TEXT("uniform float time;\r\nvoid main()\r\n{\r\n\tgl_FragColor = vec4(sin(time));\r\n}"));
+		SetWindowText(hEdit, 
+			TEXT("#define pi 3.14159265358979\r\n")
+			TEXT("uniform float time;\r\n")
+			TEXT("void main()\r\n")
+			TEXT("{\r\n")
+			TEXT("	vec2 p = gl_FragCoord;\r\n")
+			TEXT("	float c = 0.0;\r\n")
+			TEXT("	for (float i = 0.0; i < 5.0; i++)\r\n")
+			TEXT("	{\r\n")
+			TEXT("		vec2 b = vec2(\r\n")
+			TEXT("		sin(time + i * pi / 7) * 256 + 512,\r\n")
+			TEXT("		cos(time + i * pi / 2) * 256 + 384\r\n")
+			TEXT("		);\r\n")
+			TEXT("		c += 32 / distance(p, b);\r\n")
+			TEXT("	}\r\n")
+			TEXT("	gl_FragColor = vec4(c*c / sin(time), c*c / 2, c*c, 1.0);\r\n")
+			TEXT("}\r\n")
+			);
 		PostMessage(hWnd, WM_CREATED, 0, 0);
 		break;
 	case WM_CREATED:
@@ -240,13 +257,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostMessage(hEdit, WM_SETALPHA, SHOWEDITALPHA, 0);
 		break;
 	case WM_MOVE:
-	{
-		RECT rect;
-		GetClientRect(hWnd, &rect);
-		ClientToScreen(hWnd, (LPPOINT)&rect.left);
-		ClientToScreen(hWnd, (LPPOINT)&rect.right);
-		MoveWindow(hEdit, rect.left + 16, rect.top + 16, rect.right - rect.left - 32, rect.bottom - rect.top - 32, 1);
-	}
+		{
+			RECT rect;
+			GetClientRect(hWnd, &rect);
+			ClientToScreen(hWnd, (LPPOINT)&rect.left);
+			ClientToScreen(hWnd, (LPPOINT)&rect.right);
+			MoveWindow(hEdit, rect.left + 16, rect.top + 16, rect.right - rect.left - 32, rect.bottom - rect.top - 32, 1);
+		}
 		break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
