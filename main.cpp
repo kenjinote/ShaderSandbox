@@ -12,7 +12,6 @@
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
-#define WINDOW_ASPECT (WINDOW_HEIGHT.0f/WINDOW_WIDTH.0f)
 #define ID_EDITSHOW 1000
 #define ID_SELECTALL 1001
 #define WM_CREATED WM_APP
@@ -281,11 +280,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				{
 					if (program) glDeleteProgram(program);
 					program = newProgram;
-					SetWindowText(hWnd, TEXT("ƒtƒ‰ƒOƒƒ“ƒgƒVƒF[ƒ_ [ƒRƒ“ƒpƒCƒ‹¬Œ÷]"));
+					SetWindowText(hWnd, TEXT("ãƒ•ãƒ©ã‚°ãƒ¡ãƒ³ãƒˆã‚·ã‚§ãƒ¼ãƒ€ [ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æˆåŠŸ]"));
 				}
 				else
 				{
-					SetWindowText(hWnd, TEXT("ƒtƒ‰ƒOƒƒ“ƒgƒVƒF[ƒ_ [ƒRƒ“ƒpƒCƒ‹Ž¸”s]"));
+					SetWindowText(hWnd, TEXT("ãƒ•ãƒ©ã‚°ãƒ¡ãƒ³ãƒˆã‚·ã‚§ãƒ¼ãƒ€ [ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«å¤±æ•—]"));
 				}
 				GlobalFree(lpszText);
 			}
